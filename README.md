@@ -49,7 +49,3 @@ No installation is required. Simply open the `index.html` file in your favorite 
 4.  To edit later, save the `.txt` version and use the **"Import TXT"** button to load your data back into the application.
 
 ---
-
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
