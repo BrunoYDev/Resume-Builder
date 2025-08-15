@@ -1,1876 +1,307 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Currículo Moderno</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="./favicon.ico" >
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: #f1f5f9; /* bg-slate-100 */
-      }
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #e2e8f0;
-      } /* bg-slate-200 */
-      ::-webkit-scrollbar-thumb {
-        background: #94a3b8;
-        border-radius: 4px;
-      } /* bg-slate-400 */
-      ::-webkit-scrollbar-thumb:hover {
-        background: #64748b;
-      } /* bg-slate-500 */
-
-      #resume-preview-content {
-        width: 100%;
-        max-width: 794px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-          0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        margin: 0 auto;
-        background-color: white;
-      }
-      .bullet-list {
-        list-style-type: none;
-        padding-left: 0;
-      }
-      .bullet-list li {
-        position: relative;
-        padding-left: 1.5rem;
-        margin-bottom: 0.25rem;
-        word-break: break-word;
-        overflow-wrap: break-word;
-        white-space: pre-wrap;
-      }
-      .bullet-list li::before {
-        content: "•";
-        position: absolute;
-        left: 0.5rem;
-        top: 0.1em;
-        color: #334155; /* slate-700 */
-      }
-      .file-input-label {
-        cursor: pointer;
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background-color: #f1f5f9;
-        border: 1px solid #cbd5e1;
-        border-radius: 0.375rem;
-        transition: background-color 0.2s;
-      }
-      .file-input-label:hover {
-        background-color: #e2e8f0;
-      }
-      input[type="file"] {
-        display: none;
-      }
-      .form-section {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-      }
-      .form-section-header {
-        color: #2563eb; /* blue-600 */
-        border-bottom: 1px solid #bfdbfe; /* blue-200 */
-      }
-      #toast {
-        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-      }
-      .control-btn {
-        background-color: #f1f5f9;
-        border: 1px solid #cbd5e1;
-        border-radius: 9999px;
-        width: 2rem;
-        height: 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-        color: #475569;
-        transition: background-color 0.2s, color 0.2s;
-      }
-      .control-btn:hover:not(:disabled) {
-        background-color: #e2e8f0;
-        color: #1e293b;
-      }
-      .control-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
-      .remove-btn {
-        color: #ef4444;
-        background-color: #fee2e2;
-        border-color: #fecaca;
-      }
-      .remove-btn:hover {
-        background-color: #fca5a5;
-        color: #7f1d1d;
-      }
-      .modal-overlay {
-        transition: opacity 0.2s ease-in-out;
-      }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* bg-slate-100 */
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; } /* bg-slate-200 */
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; } /* bg-slate-400 */
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; } /* bg-slate-500 */
+        
+        #resume-preview-content {
+            width: 100%;
+            max-width: 794px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            background-color: white;
+        }
+        .bullet-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .bullet-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .bullet-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0.5rem;
+            top: 0.1em;
+            color: #334155; /* slate-700 */
+        }
+        .file-input-label {
+            cursor: pointer;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+        .file-input-label:hover { background-color: #e2e8f0; }
+        input[type="file"] { display: none; }
+        .form-section {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+        .form-section-header {
+            color: #2563eb; /* blue-600 */
+            border-bottom: 1px solid #bfdbfe; /* blue-200 */
+        }
+        #toast {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .control-btn {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 9999px;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #475569;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .control-btn:hover:not(:disabled) {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+        .control-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .remove-btn {
+            color: #ef4444;
+            background-color: #fee2e2;
+            border-color: #fecaca;
+        }
+         .remove-btn:hover {
+            background-color: #fca5a5;
+            color: #7f1d1d;
+        }
+        .modal-overlay {
+            transition: opacity 0.2s ease-in-out;
+        }
     </style>
-  </head>
-  <body class="text-slate-800">
+</head>
+<body class="text-slate-800">
+
     <!-- Toast Notification -->
-    <div
-      id="toast"
-      class="fixed top-5 right-5 bg-green-500 text-white py-3 px-5 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-[120%] opacity-0 z-50"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span id="toast-message"></span>
+    <div id="toast" class="fixed top-5 right-5 bg-green-500 text-white py-3 px-5 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-[120%] opacity-0 z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span id="toast-message"></span>
     </div>
 
     <!-- Generic Modal -->
-    <div
-      id="modal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-40 hidden modal-overlay opacity-0"
-    >
-      <div
-        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md text-center"
-      >
-        <h3 id="modal-title" class="text-xl font-bold text-slate-800 mb-4"></h3>
-        <p
-          id="modal-warning"
-          class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 text-left"
-        ></p>
-        <div id="modal-content" class="flex justify-center items-center gap-4">
-          <!-- Modal content is injected here -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-40 hidden modal-overlay opacity-0">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md text-center">
+            <h3 id="modal-title" class="text-xl font-bold text-slate-800 mb-4"></h3>
+            <p id="modal-warning" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 text-left"></p>
+            <div id="modal-content" class="flex flex-wrap justify-center items-center gap-4">
+                 <!-- Modal content is injected here -->
+            </div>
         </div>
-      </div>
     </div>
 
-    <div class="container mx-auto p-4 lg:p-8">
-      <header class="text-center mb-10">
-        <h1
-          id="main-title"
-          class="text-4xl md:text-5xl font-bold text-slate-800"
-        ></h1>
-        <p id="main-subtitle" class="text-slate-500 mt-3 text-lg"></p>
-      </header>
-
-      <div class="flex justify-center mb-8">
-        <button
-          id="show-import-modal-btn"
-          class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition duration-300 shadow-md hover:shadow-lg"
-        ></button>
-      </div>
-
-      <main class="flex flex-col lg:flex-row gap-10">
-        <div
-          id="form-container"
-          class="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-lg overflow-y-auto"
-          style="max-height: 85vh"
-        >
-          <!-- Formulário renderizado via JS -->
+    <div class="container mx-auto p-2 sm:p-4 lg:p-8">
+        <header class="text-center mb-10">
+            <h1 id="main-title" class="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-800"></h1>
+            <p id="main-subtitle" class="text-slate-500 mt-3 text-base sm:text-lg"></p>
+        </header>
+        
+        <div class="flex justify-center mb-8">
+            <button id="show-import-modal-btn" class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition duration-300 shadow-md hover:shadow-lg"></button>
         </div>
 
-        <div class="w-full lg:w-1/2">
-          <div class="lg:sticky top-8">
-            <div
-              class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4"
-            >
-              <h2
-                id="preview-title"
-                class="text-2xl font-bold text-slate-700"
-              ></h2>
-              <div class="relative inline-block text-left">
-                <div>
-                  <button
-                    type="button"
-                    id="download-btn"
-                    class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-blue-600 text-white font-bold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
-                  >
-                    <span id="download-btn-text"></span>
-                    <svg
-                      class="-mr-1 ml-2 h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div
-                  id="download-options"
-                  class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-10"
-                >
-                  <div class="py-1" role="none">
-                    <a
-                      href="#"
-                      id="download-pdf-btn"
-                      class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
-                      role="menuitem"
-                      tabindex="-1"
-                      >PDF</a
-                    >
-                    <a
-                      href="#"
-                      id="download-txt-btn"
-                      class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
-                      role="menuitem"
-                      tabindex="-1"
-                      >TXT</a
-                    >
-                  </div>
-                </div>
-              </div>
+        <main class="flex flex-col lg:flex-row gap-10">
+            <div id="form-container" class="w-full lg:w-1/2 bg-white p-4 sm:p-6 rounded-xl shadow-lg overflow-y-auto" style="max-height: 85vh;">
+                <!-- Formulário renderizado via JS -->
             </div>
-            <div
-              id="resume-preview"
-              class="bg-slate-200 rounded-lg overflow-auto"
-              style="max-height: calc(85vh - 70px)"
-            >
-              <div id="resume-preview-content" class="p-8">
-                <!-- Prévia renderizada via JS -->
-              </div>
+
+            <div class="w-full lg:w-1/2">
+                 <div class="lg:sticky top-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                        <h2 id="preview-title" class="text-2xl font-bold text-slate-700"></h2>
+                         <div class="relative inline-block text-left">
+                            <div>
+                                <button type="button" id="download-btn" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-blue-600 text-white font-bold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                                    <span id="download-btn-text"></span>
+                                    <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div id="download-options" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-10">
+                                <div class="py-1" role="none">
+                                    <a href="#" id="download-pdf-btn" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">PDF</a>
+                                    <a href="#" id="download-txt-btn" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1">TXT</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="resume-preview" class="bg-slate-200 rounded-lg overflow-auto" style="max-height: calc(85vh - 70px);">
+                       <div id="resume-preview-content" class="p-4 sm:p-8">
+                            <!-- Prévia renderizada via JS -->
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </main>
+        </main>
     </div>
 
     <script type="module">
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener('DOMContentLoaded', () => {
         // jsPDF is loaded globally from the script tag in the head
         const { jsPDF } = window.jspdf;
-
+        
         // --- DATA & TRANSLATIONS ---
         let resumeData = {};
         const initialData = {
-          language: "pt-br",
-          profilePicture: "",
-          fullName: "",
-          title: "",
-          phone: "",
-          email: "",
-          linkedin: "",
-          github: "",
-          city: "",
-          state: "",
-          professionalExperience: [],
-          academicEducation: [],
-          projects: [],
-          skills: {
-            languages: "",
-            backend: "",
-            frontend: "",
-            databases: "",
-            tools: "",
-          },
-          complementaryCourses: [],
+            language: 'pt-br',
+            profilePicture: '',
+            fullName: '',
+            title: '',
+            phone: '',
+            email: '',
+            linkedin: '',
+            github: '',
+            city: '',
+            state: '',
+            professionalExperience: [],
+            academicEducation: [],
+            projects: [],
+            skills: { languages: '', backend: '', frontend: '', databases: '', tools: '' },
+            complementaryCourses: []
         };
-
+        
         function resetData() {
-          resumeData = JSON.parse(JSON.stringify(initialData));
+            resumeData = JSON.parse(JSON.stringify(initialData));
         }
 
         const translations = {
-          "pt-br": {
-            mainTitle: "Gerador de Currículo Moderno",
-            mainSubtitle: "Crie um currículo profissional em minutos.",
-            previewTitle: "Prévia do Currículo",
-            downloadFile: "Baixar Arquivo",
-            generatingPdf: "Gerando PDF...",
-            downloadStarted: "Download iniciado!",
-            personalInfo: "Informações Pessoais",
-            fullName: "Nome Completo*",
-            yourName: "Seu Nome",
-            jobTitleLabel: "Título",
-            yourJobTitle: "Ex: Desenvolvedor Full-Stack",
-            phone: "Telefone*",
-            phonePlaceholder: "+5511987654321",
-            email: "Email*",
-            linkedin: "LinkedIn",
-            github: "GitHub",
-            city: "Cidade",
-            state: "Estado",
-            experience: "Experiência Profissional",
-            education: "Formação Acadêmica",
-            company: "Empresa",
-            jobTitle: "Cargo",
-            startDate: "Data de Entrada",
-            endDate: "Data de Saída",
-            currentJob: "Trabalho Atual",
-            institution: "Instituição",
-            course: "Curso",
-            degreeType: "Tipo",
-            locationType: "Modalidade",
-            presential: "Presencial",
-            projects: "Projetos",
-            projectName: "Nome do Projeto",
-            projectType: "Tipo de Projeto",
-            linkOptional: "Link (Opcional)",
-            description: "Descrição",
-            technicalSkills: "Habilidades Técnicas",
-            skillsSeparator: "Separe as habilidades com vírgula (,).",
-            languages: "Linguagens",
-            backend: "Back-End",
-            frontend: "Front-End",
-            databases: "Bancos de Dados",
-            tools: "Ferramentas e Plataformas",
-            courses: "Cursos Complementares",
-            coursePlatform: "Curso/Plataforma",
-            hoursLabel: "Horas",
-            addNewLine: "Adicionar linha",
-            present: "Presente",
-            completedIn: "Concluído em",
-            expectedCompletion: "Previsão de Conclusão:",
-            bachelor: "Bacharelado",
-            master: "Mestrado",
-            phd: "Doutorado",
-            postdoc: "Pós-Doutorado",
-            certificate: "Certificado",
-            highschool: "Ensino Médio",
-            middleschool: "Ensino Fundamental",
-            remote: "Remoto",
-            personal: "Projeto Pessoal",
-            commercial: "Projeto Comercial",
-            freelance: "Projeto de Freelance",
-            hours: "horas",
-            dateHelper: "O dia não importa.",
-            dateError: "A DATA DE INICIO É MAIOR QUE A DE TERMINO",
-            generalSettings: "Configurações Gerais",
-            resumeLanguage: "Idioma",
-            profilePicture: "Foto de Perfil",
-            uploadFromDevice: "Carregar do dispositivo",
-            orPasteUrl: "Ou cole uma URL de imagem aqui",
-            removeImage: "Remover Imagem",
-            showImportModalBtn: "Importar TXT",
-            importTitle: "Importar Currículo de TXT",
-            importWarning:
-              "Apenas arquivos TXT gerados por esta ferramenta terão 100% de compatibilidade.",
-            importLabel: "Selecionar TXT",
-            cancelBtn: "Cancelar",
-            importSuccess: "Currículo importado com sucesso!",
-            importError: "Falha ao ler o TXT. Verifique o arquivo.",
-            txtExportTitle: "Exportar para TXT",
-            txtExportWarning:
-              "O formato TXT tem limitações: a imagem de perfil não será salva e toda a formatação será perdida.",
-            confirmBtn: "OK, Baixar",
-          },
-          "en": {
-            mainTitle: "Modern Resume Builder",
-            mainSubtitle: "Create a professional resume in minutes.",
-            previewTitle: "Resume Preview",
-            downloadFile: "Download File",
-            generatingPdf: "Generating PDF...",
-            downloadStarted: "Download started!",
-            personalInfo: "Personal Information",
-            fullName: "Full Name*",
-            yourName: "Your Name",
-            jobTitleLabel: "Title",
-            yourJobTitle: "e.g., Full-Stack Developer",
-            phone: "Phone*",
-            phonePlaceholder: "+14155552671",
-            email: "Email*",
-            linkedin: "LinkedIn",
-            github: "GitHub",
-            city: "City",
-            state: "State",
-            experience: "Professional Experience",
-            education: "Education",
-            company: "Company",
-            jobTitle: "Job Title",
-            startDate: "Start Date",
-            endDate: "End Date",
-            currentJob: "Current Job",
-            institution: "Institution",
-            course: "Course",
-            degreeType: "Degree Type",
-            locationType: "Modality",
-            presential: "On-site",
-            projects: "Projects",
-            projectName: "Project Name",
-            projectType: "Project Type",
-            linkOptional: "Link (Optional)",
-            description: "Description",
-            technicalSkills: "Technical Skills",
-            skillsSeparator: "Separate skills with a comma (,).",
-            languages: "Languages",
-            backend: "Back-End",
-            frontend: "Front-End",
-            databases: "Databases",
-            tools: "Tools & Platforms",
-            courses: "Complementary Courses",
-            coursePlatform: "Course/Platform",
-            hoursLabel: "Hours",
-            addNewLine: "Add line",
-            present: "Present",
-            completedIn: "Completed in",
-            expectedCompletion: "Expected Completion:",
-            bachelor: "Bachelor",
-            master: "Master",
-            phd: "PhD",
-            postdoc: "Post-doctorate",
-            certificate: "Certificate",
-            highschool: "High School",
-            middleschool: "Middle School",
-            remote: "Remote",
-            personal: "Personal Project",
-            commercial: "Commercial Project",
-            freelance: "Freelance Project",
-            hours: "hours",
-            dateHelper: "The day does not matter.",
-            dateError: "START DATE CANNOT BE AFTER END DATE",
-            generalSettings: "General Settings",
-            resumeLanguage: "Language",
-            profilePicture: "Profile Picture",
-            uploadFromDevice: "Upload from device",
-            orPasteUrl: "Or paste an image URL here",
-            removeImage: "Remove Image",
-            showImportModalBtn: "Import TXT",
-            importTitle: "Import Resume from TXT",
-            importWarning:
-              "Only TXT files generated by this tool will have 100% compatibility.",
-            importLabel: "Select TXT",
-            cancelBtn: "Cancel",
-            importSuccess: "Resume imported successfully!",
-            importError: "Failed to read TXT. Please check the file.",
-            txtExportTitle: "Export to TXT",
-            txtExportWarning:
-              "The TXT format has limitations: the profile picture will not be saved and all formatting will be lost.",
-            confirmBtn: "OK, Download",
-          },
-          "de": {
-            mainTitle: "Moderner Lebenslauf-Editor",
-            mainSubtitle:
-              "Erstellen Sie in wenigen Minuten einen professionellen Lebenslauf.",
-            previewTitle: "Lebenslauf-Vorschau",
-            downloadFile: "Datei herunterladen",
-            generatingPdf: "PDF wird erstellt...",
-            downloadStarted: "Download gestartet!",
-            personalInfo: "Persönliche Informationen",
-            fullName: "Vollständiger Name*",
-            yourName: "Ihr Name",
-            jobTitleLabel: "Berufsbezeichnung",
-            yourJobTitle: "z.B. Full-Stack-Entwickler",
-            phone: "Telefon*",
-            phonePlaceholder: "+491234567890",
-            email: "E-Mail*",
-            linkedin: "LinkedIn",
-            github: "GitHub",
-            city: "Stadt",
-            state: "Bundesland",
-            experience: "Berufserfahrung",
-            education: "Ausbildung",
-            company: "Unternehmen",
-            jobTitle: "Position",
-            startDate: "Startdatum",
-            endDate: "Enddatum",
-            currentJob: "Aktuelle Position",
-            institution: "Einrichtung",
-            course: "Studiengang",
-            degreeType: "Abschlussart",
-            locationType: "Modalität",
-            presential: "Präsenz",
-            projects: "Projekte",
-            projectName: "Projektname",
-            projectType: "Projekttyp",
-            linkOptional: "Link (Optional)",
-            description: "Beschreibung",
-            technicalSkills: "Technische Fähigkeiten",
-            skillsSeparator: "Fähigkeiten mit einem Komma (,) trennen.",
-            languages: "Sprachen",
-            backend: "Back-End",
-            frontend: "Front-End",
-            databases: "Datenbanken",
-            tools: "Tools & Plattformen",
-            courses: "Zusätzliche Kurse",
-            coursePlatform: "Kurs/Plattform",
-            hoursLabel: "Stunden",
-            addNewLine: "Zeile hinzufügen",
-            present: "Heute",
-            completedIn: "Abgeschlossen in",
-            expectedCompletion: "Voraussichtlicher Abschluss:",
-            bachelor: "Bachelor",
-            master: "Master",
-            phd: "Promotion",
-            postdoc: "Post-Doc",
-            certificate: "Zertifikat",
-            highschool: "Höhere Schule / Abitur",
-            middleschool: "Sekundarstufe I",
-            remote: "Remote",
-            personal: "Persönliches Projekt",
-            commercial: "Kommerzielles Projekt",
-            freelance: "Freiberufliches Projekt",
-            hours: "Stunden",
-            dateHelper: "Der genaue Tag ist nicht wichtig.",
-            dateError: "DAS STARTDATUM DARF NICHT NACH DEM ENDDATUM LIEGEN",
-            generalSettings: "Allgemeine Einstellungen",
-            resumeLanguage: "Sprache",
-            profilePicture: "Profilbild",
-            uploadFromDevice: "Vom Gerät hochladen",
-            orPasteUrl: "Oder fügen Sie hier eine Bild-URL ein",
-            removeImage: "Bild entfernen",
-            showImportModalBtn: "TXT importieren",
-            importTitle: "Lebenslauf aus TXT importieren",
-            importWarning:
-              "Nur mit diesem Tool erstellte TXT-Dateien sind zu 100% kompatibel.",
-            importLabel: "TXT auswählen",
-            cancelBtn: "Abbrechen",
-            importSuccess: "Lebenslauf erfolgreich importiert!",
-            importError:
-              "Fehler beim Lesen der TXT-Datei. Bitte überprüfen Sie die Datei.",
-            txtExportTitle: "Nach TXT exportieren",
-            txtExportWarning:
-              "Das TXT-Format hat Einschränkungen: Das Profilbild wird nicht gespeichert und die gesamte Formatierung geht verloren.",
-            confirmBtn: "OK, Herunterladen",
-          },
+            'pt-br': {
+                mainTitle: 'Gerador de Currículo Moderno', mainSubtitle: 'Crie um currículo profissional em minutos.', previewTitle: 'Prévia do Currículo', downloadFile: 'Baixar Arquivo', generatingPdf: 'Gerando PDF...', downloadStarted: 'Download iniciado!',
+                personalInfo: 'Informações Pessoais', fullName: 'Nome Completo*', yourName: 'Seu Nome', jobTitleLabel: 'Título', yourJobTitle: 'Ex: Desenvolvedor Full-Stack', phone: 'Telefone*', phonePlaceholder: '+5511987654321', email: 'Email*', linkedin: 'LinkedIn', github: 'GitHub', city: 'Cidade', state: 'Estado',
+                experience: 'Experiência Profissional', education: 'Formação Acadêmica', company: 'Empresa', jobTitle: 'Cargo', startDate: 'Data de Entrada', endDate: 'Data de Saída', currentJob: 'Trabalho Atual',
+                institution: 'Instituição', course: 'Curso', degreeType: 'Tipo', locationType: 'Modalidade', presential: 'Presencial',
+                projects: 'Projetos', projectName: 'Nome do Projeto', projectType: 'Tipo de Projeto', linkOptional: 'Link (Opcional)', description: 'Descrição',
+                technicalSkills: 'Habilidades Técnicas', skillsSeparator: 'Separe as habilidades com vírgula (,).', languages: 'Linguagens', backend: 'Back-End', frontend: 'Front-End', databases: 'Bancos de Dados', tools: 'Ferramentas e Plataformas',
+                courses: 'Cursos Complementares', coursePlatform: 'Curso/Plataforma', hoursLabel: 'Horas',
+                addNewLine: 'Adicionar linha', present: 'Presente', completedIn: 'Concluído em', expectedCompletion: 'Previsão de Conclusão:',
+                bachelor: 'Bacharelado', master: 'Mestrado', phd: 'Doutorado', postdoc: 'Pós-Doutorado', certificate: 'Certificado', highschool: 'Ensino Médio', middleschool: 'Ensino Fundamental',
+                remote: 'Remoto', personal: 'Projeto Pessoal', commercial: 'Projeto Comercial', freelance: 'Projeto de Freelance', hours: 'horas',
+                dateHelper: 'O dia não importa.', dateError: 'A DATA DE INICIO É MAIOR QUE A DE TERMINO',
+                generalSettings: 'Configurações Gerais', resumeLanguage: 'Idioma', profilePicture: 'Foto de Perfil', uploadFromDevice: 'Carregar do dispositivo', orPasteUrl: 'Ou cole uma URL de imagem aqui', removeImage: 'Remover Imagem',
+                showImportModalBtn: 'Importar TXT', importTitle: 'Importar Currículo de TXT', importWarning: 'Apenas arquivos TXT gerados por esta ferramenta terão 100% de compatibilidade.', importLabel: 'Selecionar TXT', cancelBtn: 'Cancelar', importSuccess: 'Currículo importado com sucesso!', importError: 'Falha ao ler o TXT. Verifique o arquivo.',
+                txtExportTitle: 'Exportar para TXT', txtExportWarning: 'O formato TXT tem limitações: a imagem de perfil não será salva e toda a formatação será perdida.', confirmBtn: 'OK, Baixar',
+            },
+            'en': {
+                mainTitle: 'Modern Resume Builder', mainSubtitle: 'Create a professional resume in minutes.', previewTitle: 'Resume Preview', downloadFile: 'Download File', generatingPdf: 'Generating PDF...', downloadStarted: 'Download started!',
+                personalInfo: 'Personal Information', fullName: 'Full Name*', yourName: 'Your Name', jobTitleLabel: 'Title', yourJobTitle: 'e.g., Full-Stack Developer', phone: 'Phone*', phonePlaceholder: '+14155552671', email: 'Email*', linkedin: 'LinkedIn', github: 'GitHub', city: 'City', state: 'State',
+                experience: 'Professional Experience', education: 'Education', company: 'Company', jobTitle: 'Job Title', startDate: 'Start Date', endDate: 'End Date', currentJob: 'Current Job',
+                institution: 'Institution', course: 'Course', degreeType: 'Degree Type', locationType: 'Modality', presential: 'On-site',
+                projects: 'Projects', projectName: 'Project Name', projectType: 'Project Type', linkOptional: 'Link (Optional)', description: 'Description',
+                technicalSkills: 'Technical Skills', skillsSeparator: 'Separate skills with a comma (,).', languages: 'Languages', backend: 'Back-End', frontend: 'Front-End', databases: 'Databases', tools: 'Tools & Platforms',
+                courses: 'Complementary Courses', coursePlatform: 'Course/Platform', hoursLabel: 'Hours',
+                addNewLine: 'Add line', present: 'Present', completedIn: 'Completed in', expectedCompletion: 'Expected Completion:',
+                bachelor: 'Bachelor', master: 'Master', phd: 'PhD', postdoc: 'Post-doctorate', certificate: 'Certificate', highschool: 'High School', middleschool: 'Middle School',
+                remote: 'Remote', personal: 'Personal Project', commercial: 'Commercial Project', freelance: 'Freelance Project', hours: 'hours',
+                dateHelper: 'The day does not matter.', dateError: 'START DATE CANNOT BE AFTER END DATE',
+                generalSettings: 'General Settings', resumeLanguage: 'Language', profilePicture: 'Profile Picture', uploadFromDevice: 'Upload from device', orPasteUrl: 'Or paste an image URL here', removeImage: 'Remove Image',
+                showImportModalBtn: 'Import TXT', importTitle: 'Import Resume from TXT', importWarning: 'Only TXT files generated by this tool will have 100% compatibility.', importLabel: 'Select TXT', cancelBtn: 'Cancel', importSuccess: 'Resume imported successfully!', importError: 'Failed to read TXT. Please check the file.',
+                txtExportTitle: 'Export to TXT', txtExportWarning: 'The TXT format has limitations: the profile picture will not be saved and all formatting will be lost.', confirmBtn: 'OK, Download',
+            }
         };
-
-        const formContainer = document.getElementById("form-container");
-        const previewContainer = document.getElementById(
-          "resume-preview-content"
-        );
+        
+        const formContainer = document.getElementById('form-container');
+        const previewContainer = document.getElementById('resume-preview-content');
 
         // --- SHARED HELPER FUNCTIONS ---
         const formatMonthYear = (dateString, lang) => {
-          if (!dateString) return "";
-          const [year, month] = dateString.split("-");
-          const date = new Date(Date.UTC(year, month - 1));
-          return date.toLocaleDateString(lang, {
-            year: "numeric",
-            month: "long",
-            timeZone: "UTC",
-          });
+            if (!dateString) return '';
+            const [year, month] = dateString.split('-');
+            const date = new Date(Date.UTC(year, month - 1));
+            return date.toLocaleDateString(lang, { year: 'numeric', month: 'long', timeZone: 'UTC' });
         };
 
         const formatDegree = (edu, t) => {
-          if (!edu.course) return "";
-          const degreeName = t[edu.degreeType] || "";
-          if (["highschool", "middleschool"].includes(edu.degreeType))
-            return degreeName;
-          const preposition = resumeData.language === "pt-br" ? "em" : "in";
-          return `${degreeName} ${preposition} ${edu.course}`;
+            if (!edu.course) return '';
+            const degreeName = t[edu.degreeType] || '';
+            if (['highschool', 'middleschool'].includes(edu.degreeType)) return degreeName;
+            const preposition = resumeData.language === 'pt-br' ? 'em' : 'in';
+            return `${degreeName} ${preposition} ${edu.course}`;
         };
-
+        
         const formatEducationDate = (edu, t, lang) => {
-          if (!edu.endDate)
-            return edu.startDate
-              ? `${t.expectedCompletion} ${formatMonthYear(
-                  edu.startDate,
-                  lang
-                )}`
-              : "";
-          const endDate = new Date(edu.endDate);
-          const now = new Date();
-          now.setHours(0, 0, 0, 0);
-          return endDate < now
-            ? `${t.completedIn} ${formatMonthYear(edu.endDate, lang)}`
-            : `${t.expectedCompletion} ${formatMonthYear(edu.endDate, lang)}`;
+            if (!edu.endDate) return edu.startDate ? `${t.expectedCompletion} ${formatMonthYear(edu.startDate, lang)}` : '';
+            const endDate = new Date(edu.endDate);
+            const now = new Date(); now.setHours(0,0,0,0);
+            return endDate < now ? `${t.completedIn} ${formatMonthYear(edu.endDate, lang)}` : `${t.expectedCompletion} ${formatMonthYear(edu.endDate, lang)}`;
         };
-
-        const formatProjectType = (type, t) =>
-          ({
-            personal: t.personal,
-            commercial: t.commercial,
-            freelance: t.freelance,
-          }[type] || "");
+        
+        const formatProjectType = (type, t) => ({ personal: t.personal, commercial: t.commercial, freelance: t.freelance }[type] || '');
 
         // --- FORM RENDERING ---
         function isDateRangeValid(startDate, endDate) {
-          if (!startDate || !endDate) return true;
-          return new Date(startDate) <= new Date(endDate);
+            if (!startDate || !endDate) return true;
+            return new Date(startDate) <= new Date(endDate);
         }
 
-        function renderItemControls(
-          section,
-          index,
-          list,
-          field = null,
-          lineIndex = null
-        ) {
-          const isFirst = (lineIndex ?? index) === 0;
-          const isLast = (lineIndex ?? index) === list.length - 1;
-          const dataAttrs = `data-section="${section}" data-index="${index}" ${
-            field ? `data-field="${field}"` : ""
-          } ${lineIndex !== null ? `data-line-index="${lineIndex}"` : ""}`;
+        function renderItemControls(section, index, list, field = null, lineIndex = null) {
+            const isFirst = (lineIndex ?? index) === 0;
+            const isLast = (lineIndex ?? index) === list.length - 1;
+            const dataAttrs = `data-section="${section}" data-index="${index}" ${field ? `data-field="${field}"` : ''} ${lineIndex !== null ? `data-line-index="${lineIndex}"` : ''}`;
 
-          return `
+            return `
                 <div class="flex items-center gap-2">
                     <div class="flex flex-col gap-1">
-                        <button class="control-btn" data-action="move-up" ${dataAttrs} ${
-            isFirst ? "disabled" : ""
-          }>▲</button>
-                        <button class="control-btn" data-action="move-down" ${dataAttrs} ${
-            isLast ? "disabled" : ""
-          }>▼</button>
+                        <button class="control-btn" data-action="move-up" ${dataAttrs} ${isFirst ? 'disabled' : ''}>▲</button>
+                        <button class="control-btn" data-action="move-down" ${dataAttrs} ${isLast ? 'disabled' : ''}>▼</button>
                     </div>
-                    <button class="control-btn remove-btn" data-action="${
-                      field ? "remove-line" : "remove-item"
-                    }" ${dataAttrs}>×</button>
+                    <button class="control-btn remove-btn" data-action="${field ? 'remove-line' : 'remove-item'}" ${dataAttrs}>×</button>
                 </div>
             `;
         }
 
         function renderDynamicLines(section, index, fieldName, placeholder, t) {
-          const data = resumeData[section][index][fieldName] || [];
-          let inputsHTML = data
-            .map(
-              (line, lineIndex) => `
+            const data = resumeData[section][index][fieldName] || [];
+            let inputsHTML = data.map((line, lineIndex) => `
                 <div class="flex items-center gap-2 mb-2">
-                    <textarea class="flex-grow p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="1" maxlength="250" data-section="${section}" data-index="${index}" data-field="${fieldName}" data-line-index="${lineIndex}" placeholder="${placeholder} #${
-                lineIndex + 1
-              }">${line}</textarea>
-                    ${renderItemControls(
-                      section,
-                      index,
-                      data,
-                      fieldName,
-                      lineIndex
-                    )}
+                    <textarea class="flex-grow p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="1" maxlength="250" data-section="${section}" data-index="${index}" data-field="${fieldName}" data-line-index="${lineIndex}" placeholder="${placeholder} #${lineIndex + 1}">${line}</textarea>
+                    ${renderItemControls(section, index, data, fieldName, lineIndex)}
                 </div>
-            `
-            )
-            .join("");
+            `).join('');
 
-          return `<div class="col-span-1 md:col-span-2"><label class="block text-sm font-medium text-slate-700">${t[fieldName]}</label><div class="mt-1">${inputsHTML}</div><button data-action="add-line" data-section="${section}" data-index="${index}" data-field="${fieldName}" class="mt-2 text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-md hover:bg-blue-200 transition-colors">${t.addNewLine}</button></div>`;
+            return `<div class="col-span-1 md:col-span-2"><label class="block text-sm font-medium text-slate-700">${t[fieldName]}</label><div class="mt-1">${inputsHTML}</div><button data-action="add-line" data-section="${section}" data-index="${index}" data-field="${fieldName}" class="mt-2 text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-md hover:bg-blue-200 transition-colors">${t.addNewLine}</button></div>`;
         }
-
+        
         function renderForm() {
-          const t = translations[resumeData.language];
-          const inputClasses =
-            "mt-1 block w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
-          const labelClasses = "block text-sm font-medium text-slate-700";
-
-          formContainer.innerHTML = `<div class="space-y-8">
-                <div class="form-section"><h3 class="text-xl font-semibold mb-4 pb-2 form-section-header">${
-                  t.generalSettings
-                }</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start"><div><label class="${labelClasses}">${
-            t.resumeLanguage
-          }</label><select name="language" class="${inputClasses}"><option value="pt-br" ${
-            resumeData.language === "pt-br" ? "selected" : ""
-          }>Português (Brasil)</option><option value="en" ${
-            resumeData.language === "en" ? "selected" : ""
-          }>English</option><option value="de" ${
-            resumeData.language === "de" ? "selected" : ""
-          }>Deutsch</option></select></div><div><label class="${labelClasses}">${
-            t.profilePicture
-          }</label><input type="text" name="profilePictureUrl" placeholder="${
-            t.orPasteUrl
-          }" value="${
-            !resumeData.profilePicture.startsWith("data:")
-              ? resumeData.profilePicture
-              : ""
-          }" class="${inputClasses}"><div class="flex items-center gap-2 mt-2"><label for="profilePictureFile" class="file-input-label text-sm">${
-            t.uploadFromDevice
-          }</label><input type="file" id="profilePictureFile" name="profilePictureFile" accept="image/*">${
-            resumeData.profilePicture
-              ? `<button data-action="remove-image" class="text-sm bg-red-100 text-red-800 px-3 py-1 rounded-md hover:bg-red-200 transition-colors">${t.removeImage}</button>`
-              : ""
-          }</div></div></div></div>
-                <div class="form-section"><h3 class="text-xl font-semibold mb-4 pb-2 form-section-header">${
-                  t.personalInfo
-                }</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><div><label class="${labelClasses}">${
-            t.fullName
-          }</label><input type="text" name="fullName" placeholder="${
-            t.yourName
-          }" value="${
-            resumeData.fullName
-          }" class="${inputClasses}" required></div><div><label class="${labelClasses}">${
-            t.jobTitleLabel
-          }</label><input type="text" name="title" placeholder="${
-            t.yourJobTitle
-          }" value="${
-            resumeData.title
-          }" class="${inputClasses}"></div><div><label class="${labelClasses}">${
-            t.phone
-          }</label><input type="tel" name="phone" placeholder="${
-            t.phonePlaceholder
-          }" value="${
-            resumeData.phone
-          }" class="${inputClasses}" required></div><div><label class="${labelClasses}">${
-            t.email
-          }</label><input type="email" name="email" placeholder="seu.email@exemplo.com" value="${
-            resumeData.email
-          }" class="${inputClasses}" required></div><div class="col-span-1 sm:col-span-2"><label class="${labelClasses}">${
-            t.linkedin
-          }</label><div class="flex mt-1"><span class="inline-flex items-center px-3 rounded-l-md border border-r-0 bg-slate-50 text-slate-500 text-sm">linkedin.com/in/</span><input type="text" name="linkedin" placeholder="seu-perfil" value="${
-            resumeData.linkedin
-          }" class="flex-1 block w-full rounded-none rounded-r-md p-2 border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></div></div><div class="col-span-1 sm:col-span-2"><label class="${labelClasses}">${
-            t.github
-          }</label><div class="flex mt-1"><span class="inline-flex items-center px-3 rounded-l-md border border-r-0 bg-slate-50 text-slate-500 text-sm">github.com/</span><input type="text" name="github" placeholder="seu-usuario" value="${
-            resumeData.github
-          }" class="flex-1 block w-full rounded-none rounded-r-md p-2 border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></div></div><div class="col-span-1 sm:col-span-2 grid grid-cols-2 gap-6"><div><label class="${labelClasses}">${
-            t.city
-          }</label><input type="text" name="city" value="${
-            resumeData.city
-          }" class="${inputClasses}"></div><div><label class="${labelClasses}">${
-            t.state
-          }</label><input type="text" name="state" value="${
-            resumeData.state
-          }" class="${inputClasses}"></div></div></div></div>
-                <div class="form-section space-y-4"><div class="flex justify-between items-center pb-2 form-section-header"><h3 class="text-xl font-semibold">${
-                  t.experience
-                }</h3><button data-action="add-experience" class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-blue-600 text-2xl font-bold transition-colors">+</button></div><div>${(
-            resumeData.professionalExperience || []
-          )
-            .map((exp, index) => {
-              const isValid = isDateRangeValid(exp.startDate, exp.endDate);
-              const errorClass = !isValid
-                ? "border-red-500 ring-1 ring-red-500"
-                : "";
-              return `<div class="p-4 border border-slate-200 rounded-lg flex items-start gap-4 mb-4"><div class="flex-grow"><div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><div class="col-span-1 sm:col-span-2"><label class="${labelClasses}">${
-                t.company
-              }</label><input type="text" name="company" data-section="professionalExperience" data-index="${index}" value="${
-                exp.company || ""
-              }" class="${inputClasses}"></div><div class="col-span-1 sm:col-span-2"><label class="${labelClasses}">${
-                t.jobTitle
-              }</label><input type="text" name="jobTitle" data-section="professionalExperience" data-index="${index}" value="${
-                exp.jobTitle || ""
-              }" class="${inputClasses}"></div><div><label class="${labelClasses}">${
-                t.locationType
-              }</label><select name="locationType" data-section="professionalExperience" data-index="${index}" class="${inputClasses}"><option value="presential" ${
-                exp.locationType === "presential" ? "selected" : ""
-              }>${t.presential}</option><option value="remote" ${
-                exp.locationType === "remote" ? "selected" : ""
-              }>${t.remote}</option></select></div><div></div> ${
-                exp.locationType === "presential"
-                  ? `<div><label class="${labelClasses}">${
-                      t.city
-                    }</label><input type="text" name="city" data-section="professionalExperience" data-index="${index}" value="${
-                      exp.city || ""
-                    }" class="${inputClasses}"></div><div><label class="${labelClasses}">${
-                      t.state
-                    }</label><input type="text" name="state" data-section="professionalExperience" data-index="${index}" value="${
-                      exp.state || ""
-                    }" class="${inputClasses}"></div>`
-                  : ""
-              }<div><label class="${labelClasses}">${
-                t.startDate
-              }</label><input type="date" name="startDate" data-section="professionalExperience" data-index="${index}" value="${
-                exp.startDate || ""
-              }" class="${inputClasses} ${errorClass}"><p class="text-xs text-slate-500 mt-1">${
-                t.dateHelper
-              }</p></div><div><label class="${labelClasses}">${
-                t.endDate
-              }</label><input type="date" name="endDate" data-section="professionalExperience" data-index="${index}" value="${
-                exp.endDate || ""
-              }" class="${inputClasses} ${errorClass}" ${
-                exp.isCurrent ? "disabled" : ""
-              }><p class="text-xs text-slate-500 mt-1">${
-                t.dateHelper
-              }</p></div>${
-                !isValid
-                  ? `<p class="col-span-1 sm:col-span-2 text-xs text-red-600 -mt-4">${t.dateError}</p>`
-                  : ""
-              }<div class="col-span-1 sm:col-span-2 flex items-center"><input type="checkbox" name="isCurrent" data-section="professionalExperience" data-index="${index}" class="h-4 w-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500" ${
-                exp.isCurrent ? "checked" : ""
-              }><label class="ml-2 text-sm text-slate-700">${
-                t.currentJob
-              }</label></div>${renderDynamicLines(
-                "professionalExperience",
-                index,
-                "description",
-                t.description,
-                t
-              )}</div></div>${renderItemControls(
-                "professionalExperience",
-                index,
-                resumeData.professionalExperience
-              )}</div>`;
-            })
-            .join("")}</div></div>
-                <div class="form-section space-y-4"><div class="flex justify-between items-center pb-2 form-section-header"><h3 class="text-xl font-semibold">${
-                  t.education
-                }</h3><button data-action="add-education" class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-blue-600 text-2xl font-bold transition-colors">+</button></div><div>${(
-            resumeData.academicEducation || []
-          )
-            .map((edu, index) => {
-              const isValid = isDateRangeValid(edu.startDate, edu.endDate);
-              const errorClass = !isValid
-                ? "border-red-500 ring-1 ring-red-500"
-                : "";
-              return `<div class="p-4 border border-slate-200 rounded-lg flex items-start gap-4 mb-4"><div class="flex-grow"><div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><div class="col-span-1 sm:col-span-2"><label class="${labelClasses}">${
-                t.institution
-              }</label><input type="text" name="institution" data-section="academicEducation" data-index="${index}" value="${
-                edu.institution || ""
-              }" class="${inputClasses}"></div><div class="col-span-1 sm:col-span-2"><label class="${labelClasses}">${
-                t.course
-              }</label><input type="text" name="course" data-section="academicEducation" data-index="${index}" value="${
-                edu.course || ""
-              }" class="${inputClasses}"></div><div><label class="${labelClasses}">${
-                t.degreeType
-              }</label><select name="degreeType" data-section="academicEducation" data-index="${index}" class="${inputClasses}"><option value="certificate" ${
-                edu.degreeType === "certificate" ? "selected" : ""
-              }>${t.certificate}</option><option value="bachelor" ${
-                edu.degreeType === "bachelor" ? "selected" : ""
-              }>${t.bachelor}</option><option value="master" ${
-                edu.degreeType === "master" ? "selected" : ""
-              }>${t.master}</option><option value="phd" ${
-                edu.degreeType === "phd" ? "selected" : ""
-              }>${t.phd}</option><option value="postdoc" ${
-                edu.degreeType === "postdoc" ? "selected" : ""
-              }>${t.postdoc}</option><option value="highschool" ${
-                edu.degreeType === "highschool" ? "selected" : ""
-              }>${t.highschool}</option><option value="middleschool" ${
-                edu.degreeType === "middleschool" ? "selected" : ""
-              }>${
-                t.middleschool
-              }</option></select></div><div><label class="${labelClasses}">${
-                t.locationType
-              }</label><select name="locationType" data-section="academicEducation" data-index="${index}" class="${inputClasses}"><option value="remote" ${
-                edu.locationType === "remote" ? "selected" : ""
-              }>${t.remote}</option><option value="presential" ${
-                edu.locationType === "presential" ? "selected" : ""
-              }>${t.presential}</option></select></div>${
-                edu.locationType === "presential"
-                  ? `<div><label class="${labelClasses}">${
-                      t.city
-                    }</label><input type="text" name="city" data-section="academicEducation" data-index="${index}" value="${
-                      edu.city || ""
-                    }" class="${inputClasses}"></div><div><label class="${labelClasses}">${
-                      t.state
-                    }</label><input type="text" name="state" data-section="academicEducation" data-index="${index}" value="${
-                      edu.state || ""
-                    }" class="${inputClasses}"></div>`
-                  : ""
-              }<div><label class="${labelClasses}">${
-                t.startDate
-              }</label><input type="date" name="startDate" data-section="academicEducation" data-index="${index}" value="${
-                edu.startDate || ""
-              }" class="${inputClasses} ${errorClass}"><p class="text-xs text-slate-500 mt-1">${
-                t.dateHelper
-              }</p></div><div><label class="${labelClasses}">${
-                t.endDate
-              }</label><input type="date" name="endDate" data-section="academicEducation" data-index="${index}" value="${
-                edu.endDate || ""
-              }" class="${inputClasses} ${errorClass}"><p class="text-xs text-slate-500 mt-1">${
-                t.dateHelper
-              }</p></div>${
-                !isValid
-                  ? `<p class="col-span-1 sm:col-span-2 text-xs text-red-600 -mt-4">${t.dateError}</p>`
-                  : ""
-              }${renderDynamicLines(
-                "academicEducation",
-                index,
-                "description",
-                t.description,
-                t
-              )}</div></div>${renderItemControls(
-                "academicEducation",
-                index,
-                resumeData.academicEducation
-              )}</div>`;
-            })
-            .join("")}</div></div>
-                <div class="form-section space-y-4"><div class="flex justify-between items-center pb-2 form-section-header"><h3 class="text-xl font-semibold">${
-                  t.projects
-                }</h3><button data-action="add-project" class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-blue-600 text-2xl font-bold transition-colors">+</button></div><div>${(
-            resumeData.projects || []
-          )
-            .map(
-              (proj, index) =>
-                `<div class="p-4 border border-slate-200 rounded-lg flex items-start gap-4 mb-4"><div class="flex-grow"><div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><div class="col-span-1 sm:col-span-2"><label class="${labelClasses}">${
-                  t.projectName
-                }</label><input type="text" name="name" data-section="projects" data-index="${index}" value="${
-                  proj.name || ""
-                }" class="${inputClasses}"></div><div><label class="${labelClasses}">${
-                  t.projectType
-                }</label><select name="projectType" data-section="projects" data-index="${index}" class="${inputClasses}"><option value="personal" ${
-                  proj.projectType === "personal" ? "selected" : ""
-                }>${t.personal}</option><option value="commercial" ${
-                  proj.projectType === "commercial" ? "selected" : ""
-                }>${t.commercial}</option><option value="freelance" ${
-                  proj.projectType === "freelance" ? "selected" : ""
-                }>${
-                  t.freelance
-                }</option></select></div><div><label class="${labelClasses}">${
-                  t.linkOptional
-                }</label><input type="url" name="link" data-section="projects" data-index="${index}" value="${
-                  proj.link || ""
-                }" class="${inputClasses}"></div>${renderDynamicLines(
-                  "projects",
-                  index,
-                  "description",
-                  t.description,
-                  t
-                )}</div></div>${renderItemControls(
-                  "projects",
-                  index,
-                  resumeData.projects
-                )}</div>`
-            )
-            .join("")}</div></div>
-                <div class="form-section"><h3 class="text-xl font-semibold mb-4 pb-2 form-section-header">${
-                  t.technicalSkills
-                }</h3><p class="text-sm text-slate-500 mb-4">${
-            t.skillsSeparator
-          }</p><div class="space-y-4">${Object.keys(resumeData.skills)
-            .map(
-              (key) =>
-                `<div><label class="${labelClasses}">${t[key]}</label><input type="text" data-skill="${key}" value="${resumeData.skills[key]}" class="${inputClasses}"></div>`
-            )
-            .join("")}</div></div>
-                <div class="form-section space-y-4"><div class="flex justify-between items-center pb-2 form-section-header"><h3 class="text-xl font-semibold">${
-                  t.courses
-                }</h3><button data-action="add-course" class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-blue-600 text-2xl font-bold transition-colors">+</button></div><div>${(
-            resumeData.complementaryCourses || []
-          )
-            .map(
-              (course, index) =>
-                `<div class="p-4 border border-slate-200 rounded-lg flex items-center gap-4 mb-4"><div class="flex-grow"><div class="grid grid-cols-1 sm:grid-cols-2 gap-6"><div><label class="${labelClasses}">${
-                  t.coursePlatform
-                }</label><input type="text" name="name" data-section="complementaryCourses" data-index="${index}" value="${
-                  course.name || ""
-                }" class="${inputClasses}"></div><div><label class="${labelClasses}">${
-                  t.hoursLabel
-                }</label><input type="number" name="hours" data-section="complementaryCourses" data-index="${index}" value="${
-                  course.hours || ""
-                }" class="${inputClasses}"></div></div></div>${renderItemControls(
-                  "complementaryCourses",
-                  index,
-                  resumeData.complementaryCourses
-                )}</div>`
-            )
-            .join("")}</div></div>
-            </div>`;
-        }
-
-        // --- PREVIEW RENDERING ---
-        function renderPreview(target = previewContainer) {
-          const lang = resumeData.language;
-          const t = translations[lang];
-
-          const contactParts = [];
-          if (resumeData.phone)
-            contactParts.push(`<span>${resumeData.phone}</span>`);
-          if (resumeData.email)
-            contactParts.push(`<span>${resumeData.email}</span>`);
-          if (resumeData.linkedin)
-            contactParts.push(
-              `<span>${t.linkedin}: <a href="https://www.linkedin.com/in/${resumeData.linkedin}" target="_blank" class="text-blue-600 underline hover:text-blue-700">https://www.linkedin.com/in/${resumeData.linkedin}</a></span>`
-            );
-          if (resumeData.github)
-            contactParts.push(
-              `<span>${t.github}: <a href="https://github.com/${resumeData.github}" target="_blank" class="text-blue-600 underline hover:text-blue-700">https://github.com/${resumeData.github}</a></span>`
-            );
-          if (resumeData.city && resumeData.state)
-            contactParts.push(
-              `<span>${resumeData.city}, ${resumeData.state}</span>`
-            );
-
-          const escapeHtml = (unsafe) =>
-            unsafe
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#039;");
-          const renderList = (items) =>
-            items && items.length > 0
-              ? `<ul class="mt-1 text-sm text-slate-600 bullet-list">${items
-                  .map((line) => `<li>${escapeHtml(line)}</li>`)
-                  .join("")}</ul>`
-              : "";
-
-          const headerHTML = resumeData.profilePicture
-            ? `<div class="flex items-center gap-6 mb-8">
-                        <img src="${
-                          resumeData.profilePicture
-                        }" alt="Foto de Perfil" class="w-32 h-32 object-cover rounded-md">
-                        <div class="text-left">
-                            <h1 class="text-4xl font-bold text-slate-800">${
-                              resumeData.fullName || t.yourName
-                            }</h1>
-                            ${
-                              resumeData.title
-                                ? `<p class="text-2xl text-blue-600 font-semibold mt-1">${resumeData.title}</p>`
-                                : ""
-                            }
-                        </div>
-                   </div>`
-            : `<div class="text-center mb-8">
-                        <h1 class="text-4xl font-bold text-slate-800">${
-                          resumeData.fullName || t.yourName
-                        }</h1>
-                        ${
-                          resumeData.title
-                            ? `<p class="text-2xl text-blue-600 font-semibold mt-1">${resumeData.title}</p>`
-                            : ""
-                        }
-                   </div>`;
-
-          const professionalExperienceHTML =
-            (resumeData.professionalExperience || []).length > 0
-              ? `<div class="mb-6">
-                    <h2 class="text-lg font-bold uppercase border-b-2 border-slate-300 pb-1 mb-3 text-slate-700">${
-                      t.experience
-                    }</h2>
-                    ${resumeData.professionalExperience
-                      .map((exp) => {
-                        const location =
-                          exp.locationType === "remote"
-                            ? t.remote
-                            : `${exp.city || ""}, ${exp.state || ""}`;
-                        return `<div class="mb-4 text-slate-800 avoid-page-break">
-                            <p><strong>${
-                              exp.company || ""
-                            }</strong> | ${location}</p>
-                            <p><em>${
-                              exp.jobTitle || ""
-                            }</em> | ${formatMonthYear(
-                          exp.startDate,
-                          lang
-                        )} - ${
-                          exp.isCurrent
-                            ? t.present
-                            : formatMonthYear(exp.endDate, lang)
-                        }</p>
-                            ${renderList(exp.description)}
-                        </div>`;
-                      })
-                      .join("")}
-                </div>`
-              : "";
-
-          const academicEducationHTML =
-            (resumeData.academicEducation || []).length > 0
-              ? `<div class="mb-6">
-                    <h2 class="text-lg font-bold uppercase border-b-2 border-slate-300 pb-1 mb-3 text-slate-700">${
-                      t.education
-                    }</h2>
-                    ${resumeData.academicEducation
-                      .map(
-                        (edu) =>
-                          `<div class="mb-4 text-slate-800 avoid-page-break"><p><strong>${
-                            edu.institution || ""
-                          }</strong> | <span class="font-normal">${
-                            edu.locationType === "remote"
-                              ? t.remote
-                              : `${edu.city || ""}, ${edu.state || ""}`
-                          }</span></p><p><em>${formatDegree(
-                            edu,
-                            t
-                          )}</em> | ${formatEducationDate(
-                            edu,
-                            t,
-                            lang
-                          )}</p>${renderList(edu.description)}</div>`
-                      )
-                      .join("")}
-                </div>`
-              : "";
-
-          const renderSkills = () => {
-            const hasSkills = Object.values(resumeData.skills).some((s) =>
-              s.trim()
-            );
-            if (!hasSkills) return "";
-            return `<div class="mb-6 avoid-page-break"><h2 class="text-lg font-bold uppercase border-b-2 border-slate-300 pb-1 mb-3 text-slate-700"><strong>${
-              t.technicalSkills
-            }</strong></h2><ul class="bullet-list text-slate-600">${Object.entries(
-              resumeData.skills
-            )
-              .map(([key, value]) =>
-                value.trim()
-                  ? `<li><strong>${t[key]}:</strong> ${value.trim()}</li>`
-                  : ""
-              )
-              .filter(Boolean)
-              .join("")}</ul></div>`;
-          };
-
-          const projectNameHTML = (proj) => {
-            const name = proj.name || "Projeto sem nome";
-            if (proj.link) {
-              return `<a href="${proj.link}" target="_blank" class="text-blue-600 underline hover:text-blue-700">${name}</a>`;
-            }
-            return `<span>${name}</span>`;
-          };
-
-          target.innerHTML = `<div class="p-8">
-                ${headerHTML}
-                <div class="text-center text-sm mb-8 text-slate-500 flex justify-center items-center flex-wrap gap-x-3 gap-y-1 break-all">${contactParts.join(
-                  '<span class="text-slate-300">|</span>'
-                )}</div>
-                ${professionalExperienceHTML}
-                ${academicEducationHTML}
-                ${
-                  (resumeData.projects || []).length > 0
-                    ? `<div class="mb-6"><h2 class="text-lg font-bold uppercase border-b-2 border-slate-300 pb-1 mb-3 text-slate-700">${
-                        t.projects
-                      }</h2>${resumeData.projects
-                        .map(
-                          (proj) =>
-                            `<div class="mb-4 text-slate-800 avoid-page-break"><h3 class="text-md font-semibold">${projectNameHTML(
-                              proj
-                            )} | <span class="text-sm font-normal italic text-slate-600">${formatProjectType(
-                              proj.projectType,
-                              t
-                            )}</span></h3>${renderList(proj.description)}</div>`
-                        )
-                        .join("")}</div>`
-                    : ""
-                }
-                ${renderSkills()}
-                ${
-                  (resumeData.complementaryCourses || []).length > 0
-                    ? `<div class="mb-6 avoid-page-break"><h2 class="text-lg font-bold uppercase border-b-2 border-slate-300 pb-1 mb-3 text-slate-700"><strong>${
-                        t.courses
-                      }</strong></h2><ul class="bullet-list text-slate-600">${resumeData.complementaryCourses
-                        .map(
-                          (course) =>
-                            `<li><strong>${course.name || ""}</strong> (${
-                              course.hours || 0
-                            } ${t.hours})</li>`
-                        )
-                        .join("")}</ul></div>`
-                    : ""
-                }
-            </div>`;
-        }
-
-        // --- EVENT HANDLERS & ACTIONS ---
-        function handleFormAction(e) {
-          const button = e.target.closest("button[data-action]");
-          if (!button) return;
-
-          const { action, section, index, field, lineIndex } = button.dataset;
-          const intIndex = parseInt(index, 10);
-          const intLineIndex = parseInt(lineIndex, 10);
-
-          let list = null;
-          let currentIndex = null;
-          if (field) {
-            // Nested list
-            list = resumeData[section][intIndex][field];
-            currentIndex = intLineIndex;
-          } else if (section) {
-            // Top-level list
-            list = resumeData[section];
-            currentIndex = intIndex;
-          }
-
-          switch (action) {
-            case "remove-image":
-              resumeData.profilePicture = "";
-              break;
-            case "add-experience":
-              resumeData.professionalExperience.push({
-                description: [],
-                locationType: "presential",
-              });
-              break;
-            case "add-education":
-              resumeData.academicEducation.push({
-                description: [],
-                locationType: "remote",
-              });
-              break;
-            case "add-project":
-              resumeData.projects.push({
-                description: [],
-                projectType: "personal",
-              });
-              break;
-            case "add-course":
-              resumeData.complementaryCourses.push({});
-              break;
-            case "add-line":
-              list.push("");
-              break;
-            case "remove-item":
-            case "remove-line":
-              list.splice(currentIndex, 1);
-              break;
-            case "move-up":
-            case "move-down":
-              if (list) {
-                const direction = action === "move-up" ? -1 : 1;
-                const newIndex = currentIndex + direction;
-                if (newIndex >= 0 && newIndex < list.length) {
-                  [list[currentIndex], list[newIndex]] = [
-                    list[newIndex],
-                    list[currentIndex],
-                  ];
-                }
-              }
-              break;
-          }
-          updateUI();
-        }
-
-        function formatInternationalPhone(value) {
-          const cleaned = ("" + value).replace(/\D/g, "");
-          return `+${cleaned}`;
-        }
-
-        function handleFormInput(e) {
-          const { name, value, type, checked, files } = e.target;
-          const { section, index, field, lineIndex, skill } = e.target.dataset;
-
-          if (e.target.tagName === "TEXTAREA" && field) {
-            e.target.style.height = "auto";
-            e.target.style.height = e.target.scrollHeight + "px";
-          }
-
-          if (name === "phone") {
-            const formattedValue = formatInternationalPhone(value);
-            resumeData.phone = formattedValue;
-            e.target.value = formattedValue;
-          } else if (name === "profilePictureFile" && files && files[0]) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-              resumeData.profilePicture = event.target.result;
-              updateUI();
-            };
-            reader.readAsDataURL(files[0]);
-            return;
-          } else if (name === "profilePictureUrl") {
-            resumeData.profilePicture = value;
-          } else if (skill) {
-            resumeData.skills[skill] = value;
-          } else if (section && field) {
-            resumeData[section][parseInt(index, 10)][field][
-              parseInt(lineIndex, 10)
-            ] = value;
-          } else if (section) {
-            resumeData[section][parseInt(index, 10)][name] =
-              type === "checkbox" ? checked : value;
-          } else {
-            resumeData[name] = value;
-          }
-
-          if (name === "language" || (section && name === "locationType")) {
-            updateUI();
-          } else if (
-            section &&
-            (name === "startDate" || name === "endDate" || name === "isCurrent")
-          ) {
-            renderForm();
-            renderPreview();
-          } else {
-            renderPreview();
-          }
-        }
-
-        // --- PDF GENERATION ---
-        async function generatePdf() {
-          const t = translations[resumeData.language];
-          const btn = document.getElementById("download-btn");
-          const btnText = document.getElementById("download-btn-text");
-          const originalText = btnText.textContent;
-          btnText.textContent = t.generatingPdf;
-          btn.disabled = true;
-
-          try {
-            const doc = new jsPDF({
-              orientation: "p",
-              unit: "mm",
-              format: "a4",
-            });
-            doc.setFont("Helvetica", "normal");
-
-            let y = 20;
-            const leftMargin = 20;
-            const rightMargin = 20;
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const usableWidth =
-              doc.internal.pageSize.getWidth() - leftMargin - rightMargin;
-
-            const checkPageBreak = (heightNeeded) => {
-              if (y + heightNeeded > pageHeight - 20) {
-                doc.addPage();
-                y = 20;
-              }
-            };
-
-            // --- HEADER ---
-            const headerStartY = 20;
-            let textX = leftMargin;
-            let headerAlignment = "left";
-
-            if (resumeData.profilePicture) {
-              const imgSize = 30; // 30mm square
-              doc.addImage(
-                resumeData.profilePicture,
-                "JPEG",
-                leftMargin,
-                headerStartY,
-                imgSize,
-                imgSize
-              );
-              textX = leftMargin + imgSize + 8;
-            } else {
-              textX = doc.internal.pageSize.getWidth() / 2;
-              headerAlignment = "center";
-            }
-
-            doc
-              .setFontSize(24)
-              .setFont("Helvetica", "bold")
-              .setTextColor("#1e293b");
-            doc.text(
-              resumeData.fullName || t.yourName,
-              textX,
-              headerStartY + 12,
-              { align: headerAlignment }
-            );
-
-            if (resumeData.title) {
-              doc
-                .setFontSize(16)
-                .setFont("Helvetica", "normal")
-                .setTextColor("#2563eb");
-              doc.text(resumeData.title, textX, headerStartY + 22, {
-                align: headerAlignment,
-              });
-            }
-            y = headerStartY + 35;
-
-            // --- CONTACT INFO ---
-            doc.setFontSize(9);
-            const contactItems = [
-              { text: resumeData.phone },
-              { text: resumeData.email },
-              {
-                label: `${t.linkedin}: `,
-                text: `https://www.linkedin.com/in/${resumeData.linkedin}`,
-                url: `https://www.linkedin.com/in/${resumeData.linkedin}`,
-              },
-              {
-                label: `${t.github}: `,
-                text: `https://github.com/${resumeData.github}`,
-                url: `https://github.com/${resumeData.github}`,
-              },
-              {
-                text:
-                  resumeData.city && resumeData.state
-                    ? `${resumeData.city}, ${resumeData.state}`
-                    : null,
-              },
-            ].filter((item) => item.text);
-
-            let contactLines = [];
-            let currentLine = [];
-            const separator = " | ";
-            contactItems.forEach((item) => {
-              const potentialLine = [...currentLine, item];
-              const text = potentialLine
-                .map((i) => (i.label || "") + i.text)
-                .join(separator);
-              if (doc.getTextWidth(text) > usableWidth) {
-                contactLines.push(currentLine);
-                currentLine = [item];
-              } else {
-                currentLine.push(item);
-              }
-            });
-            contactLines.push(currentLine);
-
-            contactLines.forEach((line) => {
-              checkPageBreak(6);
-              const lineText = line
-                .map((i) => (i.label || "") + i.text)
-                .join(separator);
-              const lineWidth = doc.getTextWidth(lineText);
-              let currentX =
-                doc.internal.pageSize.getWidth() / 2 - lineWidth / 2;
-
-              line.forEach((item, index) => {
-                if (item.url) {
-                  doc.setTextColor("#64748b");
-                  doc.text(item.label, currentX, y);
-                  currentX += doc.getTextWidth(item.label);
-
-                  doc.setTextColor("#2563eb");
-                  const textWidth = doc.getTextWidth(item.text);
-                  doc.textWithLink(item.text, currentX, y, { url: item.url });
-                  doc
-                    .setDrawColor("#2563eb")
-                    .line(currentX, y + 1, currentX + textWidth, y + 1);
-                  currentX += textWidth;
-                } else {
-                  doc.setTextColor("#64748b");
-                  doc.text(item.text, currentX, y);
-                  currentX += doc.getTextWidth(item.text);
-                }
-
-                if (index < line.length - 1) {
-                  doc.setTextColor("#cbd5e1");
-                  doc.text(separator, currentX, y);
-                  currentX += doc.getTextWidth(separator);
-                }
-              });
-              y += 6;
-            });
-            y += 4;
-
-            // --- SECTIONS ---
-            const drawSectionTitle = (title) => {
-              checkPageBreak(12);
-              doc
-                .setFontSize(12)
-                .setFont("Helvetica", "bold")
-                .setTextColor("#334155");
-              doc.text(title.toUpperCase(), leftMargin, y);
-              y += 2;
-              doc
-                .setLineWidth(0.5)
-                .setDrawColor("#cbd5e1")
-                .line(
-                  leftMargin,
-                  y,
-                  doc.internal.pageSize.getWidth() - rightMargin,
-                  y
-                );
-              y += 8;
-            };
-
-            const drawBulletList = (items) => {
-              if (!items || items.length === 0) return;
-              doc
-                .setFontSize(10)
-                .setFont("Helvetica", "normal")
-                .setTextColor("#475569");
-              items.forEach((line) => {
-                const splitLines = doc.splitTextToSize(line, usableWidth - 5);
-                checkPageBreak(splitLines.length * 5);
-                doc.text(`•`, leftMargin + 2, y, { charSpace: 2 });
-                doc.text(splitLines, leftMargin + 5, y);
-                y += splitLines.length * 5;
-              });
-            };
-
-            if ((resumeData.professionalExperience || []).length > 0) {
-              drawSectionTitle(t.experience);
-              resumeData.professionalExperience.forEach((item) => {
-                const estHeight = 18 + (item.description?.length || 0) * 10;
-                checkPageBreak(estHeight);
-                const location =
-                  item.locationType === "remote"
-                    ? t.remote
-                    : `${item.city || ""}, ${item.state || ""}`;
-                const dateRange = `${formatMonthYear(
-                  item.startDate,
-                  resumeData.language
-                )} - ${
-                  item.isCurrent
-                    ? t.present
-                    : formatMonthYear(item.endDate, resumeData.language)
-                }`;
-
-                doc
-                  .setFontSize(11)
-                  .setFont("Helvetica", "bold")
-                  .setTextColor("#1e293b");
-                doc.text(item.company || "", leftMargin, y);
-                const companyWidth = doc.getTextWidth(item.company || "");
-                doc
-                  .setFont("Helvetica", "normal")
-                  .setTextColor("#475569")
-                  .text(`| ${location}`, leftMargin + companyWidth + 1, y);
-                y += 6;
-
-                doc
-                  .setFontSize(10)
-                  .setFont("Helvetica", "italic")
-                  .setTextColor("#475569");
-                doc.text(item.jobTitle || "", leftMargin, y);
-                const jobTitleWidth = doc.getTextWidth(item.jobTitle || "");
-                doc
-                  .setFont("Helvetica", "normal")
-                  .setTextColor("#64748b")
-                  .text(`| ${dateRange}`, leftMargin + jobTitleWidth + 1, y);
-                y += 6;
-
-                drawBulletList(item.description);
-                y += 4;
-              });
-            }
-
-            if ((resumeData.academicEducation || []).length > 0) {
-              drawSectionTitle(t.education);
-              resumeData.academicEducation.forEach((item) => {
-                const estHeight = 18 + (item.description?.length || 0) * 10;
-                checkPageBreak(estHeight);
-                const location =
-                  item.locationType === "remote"
-                    ? t.remote
-                    : `${item.city || ""}, ${item.state || ""}`;
-                const degree = `${formatDegree(
-                  item,
-                  t
-                )} | ${formatEducationDate(item, t, resumeData.language)}`;
-
-                doc
-                  .setFontSize(11)
-                  .setFont("Helvetica", "bold")
-                  .setTextColor("#1e293b");
-                doc.text(item.institution || "", leftMargin, y);
-                const institutionWidth = doc.getTextWidth(
-                  item.institution || ""
-                );
-                doc
-                  .setFont("Helvetica", "normal")
-                  .setTextColor("#475569")
-                  .text(`| ${location}`, leftMargin + institutionWidth + 1, y);
-                y += 6;
-
-                doc
-                  .setFontSize(10)
-                  .setFont("Helvetica", "italic")
-                  .setTextColor("#475569")
-                  .text(degree, leftMargin, y);
-                y += 6;
-                drawBulletList(item.description);
-                y += 4;
-              });
-            }
-
-            if ((resumeData.projects || []).length > 0) {
-              drawSectionTitle(t.projects);
-              resumeData.projects.forEach((item) => {
-                checkPageBreak(12 + (item.description?.length || 0) * 10);
-                doc.setFontSize(11).setFont("Helvetica", "bold");
-                const projectName = item.name || "Project";
-                const nameWidth = doc.getTextWidth(projectName);
-
-                if (item.link) {
-                  doc.setTextColor("#2563eb");
-                  doc.textWithLink(projectName, leftMargin, y, {
-                    url: item.link,
-                  });
-                  doc
-                    .setDrawColor("#2563eb")
-                    .line(leftMargin, y + 1, leftMargin + nameWidth, y + 1);
-                } else {
-                  doc.setTextColor("#1e293b");
-                  doc.text(projectName, leftMargin, y);
-                }
-
-                doc.setFont("Helvetica", "italic").setTextColor("#64748b");
-                doc.text(
-                  `| ${formatProjectType(item.projectType, t) || ""}`,
-                  leftMargin + nameWidth + 2,
-                  y
-                );
-                y += 6;
-                drawBulletList(item.description);
-                y += 4;
-              });
-            }
-
-            if (Object.values(resumeData.skills).some((s) => s.trim())) {
-              drawSectionTitle(t.technicalSkills);
-              Object.entries(resumeData.skills).forEach(([key, value]) => {
-                if (value.trim()) {
-                  const skillLine = `${t[key]}: ${value.trim()}`;
-                  const splitLines = doc.splitTextToSize(
-                    skillLine,
-                    usableWidth
-                  );
-                  checkPageBreak(splitLines.length * 5);
-                  doc.setFontSize(10);
-                  doc
-                    .setFont("Helvetica", "bold")
-                    .setTextColor("#475569")
-                    .text(`${t[key]}:`, leftMargin, y);
-                  const titleWidth = doc.getTextWidth(`${t[key]}: `);
-                  doc
-                    .setFont("Helvetica", "normal")
-                    .setTextColor("#475569")
-                    .text(value.trim(), leftMargin + titleWidth, y);
-                  y += splitLines.length * 5;
-                }
-              });
-              y += 4;
-            }
-
-            if ((resumeData.complementaryCourses || []).length > 0) {
-              drawSectionTitle(t.courses);
-              resumeData.complementaryCourses.forEach((item) => {
-                checkPageBreak(5);
-                doc.setFontSize(10);
-                doc
-                  .setFont("Helvetica", "bold")
-                  .setTextColor("#475569")
-                  .text(`• ${item.name || ""}`, leftMargin, y);
-                const titleWidth = doc.getTextWidth(`• ${item.name || ""} `);
-                doc
-                  .setFont("Helvetica", "normal")
-                  .setTextColor("#475569")
-                  .text(
-                    `(${item.hours || 0} ${t.hours})`,
-                    leftMargin + titleWidth,
-                    y
-                  );
-                y += 5;
-              });
-            }
-
-            const filename = `curriculo_${
-              resumeData.fullName.trim().replace(/\s+/g, "_") || "candidato"
-            }.pdf`;
-            doc.save(filename);
-            showToast(t.downloadStarted);
-          } catch (error) {
-            console.error("PDF generation failed:", error);
-          } finally {
-            btnText.textContent = originalText;
-            btn.disabled = false;
-          }
-        }
-
-        // --- TXT IMPORT/EXPORT LOGIC ---
-        function generateTxt() {
-          let content = "";
-          const add = (key, value) => {
-            if (value) content += `${key}: ${value}\n`;
-          };
-
-          add("language", resumeData.language);
-          add("fullName", resumeData.fullName);
-          add("title", resumeData.title);
-          add("phone", resumeData.phone);
-          add("email", resumeData.email);
-          add("linkedin", resumeData.linkedin);
-          add("github", resumeData.github);
-          add("city", resumeData.city);
-          add("state", resumeData.state);
-
-          Object.entries(resumeData.skills).forEach(([key, value]) =>
-            add(`skill_${key}`, value)
-          );
-
-          const addSection = (sectionKey, sectionArray) => {
-            if (!sectionArray || sectionArray.length === 0) return;
-            content += `\n[SECTION:${sectionKey}]\n`;
-            sectionArray.forEach((item) => {
-              content += "[ITEM]\n";
-              Object.entries(item).forEach(([key, value]) => {
-                if (key === "description") {
-                  (value || []).forEach((desc) => add("description", desc));
-                } else {
-                  add(key, value);
-                }
-              });
-            });
-          };
-
-          addSection(
-            "professionalExperience",
-            resumeData.professionalExperience
-          );
-          addSection("academicEducation", resumeData.academicEducation);
-          addSection("projects", resumeData.projects);
-          addSection("complementaryCourses", resumeData.complementaryCourses);
-
-          const blob = new Blob([content], { type: "text/plain" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `curriculo_${
-            resumeData.fullName.trim().replace(/\s+/g, "_") || "candidato"
-          }.txt`;
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-
-        function parseTxt(text) {
-          const t = translations[resumeData.language];
-          try {
-            resetData();
-            let currentSection = null;
-            let currentItem = null;
-
-            text.split("\n").forEach((line) => {
-              if (line.startsWith("[SECTION:")) {
-                currentSection = line.substring(9, line.length - 1);
-                currentItem = null;
-              } else if (line === "[ITEM]") {
-                currentItem = {};
-                resumeData[currentSection].push(currentItem);
-                currentItem.description = [];
-              } else {
-                const [key, ...valueParts] = line.split(": ");
-                const value = valueParts.join(": ");
-
-                if (key.startsWith("skill_")) {
-                  resumeData.skills[key.substring(6)] = value;
-                } else if (currentItem) {
-                  if (key === "description") {
-                    currentItem.description.push(value);
-                  } else if (key === "isCurrent") {
-                    currentItem[key] = value === "true";
-                  } else {
-                    currentItem[key] = value;
-                  }
-                } else {
-                  resumeData[key] = value;
-                }
-              }
-            });
-            showToast(t.importSuccess);
-            updateUI();
-          } catch (error) {
-            console.error("TXT Parsing Error:", error);
-            showToast(t.importError);
-          }
-        }
-
-        // --- UI INITIALIZATION & MAIN LOGIC ---
-        function showToast(message) {
-          const toast = document.getElementById("toast");
-          const toastMessage = document.getElementById("toast-message");
-          toastMessage.textContent = message;
-          toast.style.transform = "translateX(0)";
-          toast.style.opacity = "1";
-          setTimeout(() => {
-            toast.style.transform = "translateX(120%)";
-            toast.style.opacity = "0";
-          }, 3000);
-        }
-
-        function updateStaticUI(lang) {
-          const t = translations[lang];
-          document.documentElement.lang = lang.split("-")[0];
-          document.title = t.mainTitle;
-          document.getElementById("main-title").textContent = t.mainTitle;
-          document.getElementById("main-subtitle").textContent = t.mainSubtitle;
-          document.getElementById("preview-title").textContent = t.previewTitle;
-          document.getElementById("download-btn-text").textContent =
-            t.downloadFile;
-          document.getElementById("show-import-modal-btn").textContent =
-            t.showImportModalBtn;
-        }
-
-        function updateUI() {
-          updateStaticUI(resumeData.language);
-          renderForm();
-          renderPreview();
-        }
-
-        // Modal Logic
-        const modal = document.getElementById("modal");
-        const modalTitle = document.getElementById("modal-title");
-        const modalWarning = document.getElementById("modal-warning");
-        const modalContent = document.getElementById("modal-content");
-
-        function toggleModal(show) {
-          if (show) {
-            modal.classList.remove("hidden");
-            setTimeout(() => modal.classList.remove("opacity-0"), 10);
-          } else {
-            modal.classList.add("opacity-0");
-            setTimeout(() => modal.classList.add("hidden"), 200);
-          }
-        }
-
-        modal.addEventListener("click", (e) => {
-          if (e.target === modal) toggleModal(false);
-        });
-
-        // Import Modal
-        document
-          .getElementById("show-import-modal-btn")
-          .addEventListener("click", () => {
             const t = translations[resumeData.language];
-            modalTitle.textContent = t.importTitle;
-            modalWarning.textContent = t.importWarning;
-            modalContent.innerHTML = `
-                 <label for="import-txt-file" class="file-input-label bg-blue-600 text-white hover:bg-blue-700">${t.importLabel}</label>
-                 <input type="file" id="import-txt-file" accept=".txt">
-                 <button id="cancel-btn" class="bg-slate-200 text-slate-800 font-bold py-2 px-6 rounded-lg hover:bg-slate-300 transition duration-300">${t.cancelBtn}</button>
-            `;
-            document.getElementById("cancel-btn").onclick = () =>
-              toggleModal(false);
-            document.getElementById("import-txt-file").onchange = (e) => {
-              const file = e.target.files[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => parseTxt(event.target.result);
-                reader.readAsText(file);
-                toggleModal(false);
-              }
-            };
-            toggleModal(true);
-          });
+            const inputClasses = "mt-1 block w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+            const labelClasses = "block text-sm font-medium text-slate-700";
 
-        // Download Dropdown
-        const downloadBtn = document.getElementById("download-btn");
-        const downloadOptions = document.getElementById("download-options");
-        downloadBtn.addEventListener("click", () =>
-          downloadOptions.classList.toggle("hidden")
-        );
-        document.addEventListener("click", (e) => {
-          if (
-            !downloadBtn.contains(e.target) &&
-            !downloadOptions.contains(e.target)
-          ) {
-            downloadOptions.classList.add("hidden");
-          }
-        });
-
-        document
-          .getElementById("download-pdf-btn")
-          .addEventListener("click", (e) => {
-            e.preventDefault();
-            generatePdf();
-            downloadOptions.classList.add("hidden");
-          });
-
-        document
-          .getElementById("download-txt-btn")
-          .addEventListener("click", (e) => {
-            e.preventDefault();
-            const t = translations[resumeData.language];
-            modalTitle.textContent = t.txtExportTitle;
-            modalWarning.textContent = t.txtExportWarning;
-            modalContent.innerHTML = `
-                <button id="confirm-txt-btn" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700">${t.confirmBtn}</button>
-                <button id="cancel-btn" class="bg-slate-200 text-slate-800 font-bold py-2 px-6 rounded-lg hover:bg-slate-300">${t.cancelBtn}</button>
-            `;
-            document.getElementById("confirm-txt-btn").onclick = () => {
-              generateTxt();
-              toggleModal(false);
-            };
-            document.getElementById("cancel-btn").onclick = () =>
-              toggleModal(false);
-            toggleModal(true);
-            downloadOptions.classList.add("hidden");
-          });
-
-        // Main event listeners
-        formContainer.addEventListener("click", handleFormAction);
-        formContainer.addEventListener("input", handleFormInput);
-
-        // Initial Load
-        resetData();
-        updateUI();
-      });
-    </script>
-  </body>
-</html>
+            formContainer.innerHTML = `<div class="space-y-8">
+                <div class="form-section"><h3 class="text-xl font-semibold mb-4 pb-2 form-section-header">${t.generalSettings}</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start"><div><label class="${labelClasses}">${t.resumeLanguage}</label><select name="language" class="${inputClasses}"><option value="pt-br" ${resumeData.language === 'pt-br' ? 'selected' : ''}>Português (Brasil)</option><option value="en" ${resumeData.language === 'en' ? 'selected' : ''}>English</option><option value="de" ${resumeData.language === 'de' ? 'selected' : ''}>Deutsch</option></select></div><div><label class="${labelClasses}">${t.profilePicture}</label><input type="text" name="profilePictureUrl" placeholder="${t.orPasteUrl}" value="${!resumeData.profilePicture.startsWith('data:') ? resumeData.profilePicture : ''}" class="${inputClasses}"><div class="flex flex-wrap items-center gap-2 mt-2"><label for="profilePictureFile" class="file-input-label text-sm">${t.uploadFromDevice}</label><input type="file" id="profilePictureFile" name="profilePictureF
